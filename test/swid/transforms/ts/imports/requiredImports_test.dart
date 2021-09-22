@@ -15,7 +15,7 @@ void main() {
       name: "getProperties",
       nullabilitySuffix: SwidNullabilitySuffix.none,
       originalPackagePath: "package:flutter/src/foundation/diagnostics.dart",
-      swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
+      declarationModifiers: SwidDeclarationModifiers.empty(),
       namedParameterTypes: {},
       namedDefaults: {},
       normalParameterNames: [],
@@ -24,12 +24,14 @@ void main() {
       optionalParameterTypes: [],
       returnType: SwidType.fromSwidInterface(
         swidInterface: SwidInterface(
+          declarationModifiers: SwidDeclarationModifiers.empty(),
           name: "List<DiagnosticsNode>",
           nullabilitySuffix: SwidNullabilitySuffix.none,
           originalPackagePath: "dart:core",
           typeArguments: [
             SwidType.fromSwidInterface(
               swidInterface: SwidInterface(
+                declarationModifiers: SwidDeclarationModifiers.empty(),
                 name: "DiagnosticsNode",
                 nullabilitySuffix: SwidNullabilitySuffix.none,
                 originalPackagePath:
@@ -50,7 +52,8 @@ void main() {
     expect(
         collectAllReferences(
                 swidType: SwidType.fromSwidFunctionType(
-                    swidFunctionType: getProperties))
+          swidFunctionType: getProperties,
+        ))
             .map((x) => resolveTsImportsPaths(
                 importee: SwidType.fromSwidInterface(swidInterface: x),
                 importer: SwidType.fromSwidFunctionType(

@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'package:hydro_sdk/swid/backend/ts/tsClassMethodInjectionCandidates.dart';
 import 'package:hydro_sdk/swid/backend/ts/tsClassMethodInjectionFieldName.dart';
 import 'package:hydro_sdk/swid/ir/swidClass.dart';
@@ -10,9 +8,11 @@ import 'package:hydro_sdk/swid/transforms/ts/transformFunctionTypeToTs.dart';
 class TsClassMethodInjectionFieldDeclarations {
   final SwidClass swidClass;
 
-  TsClassMethodInjectionFieldDeclarations({@required this.swidClass});
+  const TsClassMethodInjectionFieldDeclarations({
+    required final this.swidClass,
+  });
 
-  String toTsSource() => (swidClass.methods.isNotEmpty ?? false)
+  String toTsSource() => (swidClass.methods.isNotEmpty)
       ? [
             ...tsClassMethodInjectionCandidates(
                     swidFunctionTypes: swidClass.methods)
@@ -25,9 +25,11 @@ class TsClassMethodInjectionFieldDeclarations {
                         .toTsSource() +
                     ": " +
                     transformFunctionTypeToTs(
+                      parentClass: swidClass,
                       swidFunctionType:
                           rewriteClassReferencesToInterfaceReferencesInFunction(
-                              swidFunctionType: x),
+                        swidFunctionType: x,
+                      ),
                       trailingReturnTypeKind: TrailingReturnTypeKind.fatArrow,
                     ) +
                     " = undefined as any;")

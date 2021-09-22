@@ -11,20 +11,20 @@ void main() {
   LiveTestWidgetsFlutterBinding();
   testWidgets('', (WidgetTester tester) async {
     var iconDataClass = SwidClass.fromJson(
-        json.decode(File("../test/swid/res/IconData.json").readAsStringSync()));
+        json.decode(File("test/swid/res/IconData.json").readAsStringSync()));
 
     expect(requiresDartBinding(swidClass: iconDataClass), true);
     expect(iconDataClass.instanceFieldDeclarations.length, 4);
     expect(TsClassVmDeclaration(swidClass: iconDataClass).toTsSource(), """
 declare const flutter: {
 widgets: {
-iconData: (this: void, iconData: IIconData, codePoint: number, props : { fontFamily : string, fontPackage : string, matchTextDirection : boolean, }) => IIconData
+iconData: (this: void, iconData: IIconData, codePoint: number, props : {  fontFamily? : string | undefined, fontPackage? : string | undefined, matchTextDirection : boolean,}) => IIconData
 }
 };
 """);
 
-    var cupertinoIconsClass = SwidClass.fromJson(json.decode(
-        File("../test/swid/res/CupertinoIcons.json").readAsStringSync()));
+    var cupertinoIconsClass = SwidClass.fromJson(json
+        .decode(File("test/swid/res/CupertinoIcons.json").readAsStringSync()));
 
     expect(
         TsClassVmDeclaration(swidClass: cupertinoIconsClass).toTsSource(), "");

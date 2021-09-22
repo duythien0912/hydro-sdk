@@ -1,12 +1,10 @@
-import 'package:meta/meta.dart';
-
 class TsResolvedImport {
   final List<String> symbols;
   final String path;
 
   TsResolvedImport({
-    @required this.symbols,
-    @required this.path,
+    required final this.symbols,
+    required final this.path,
   });
 
   String toTsSource() => [

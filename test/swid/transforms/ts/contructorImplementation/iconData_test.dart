@@ -10,13 +10,13 @@ void main() {
   LiveTestWidgetsFlutterBinding();
   testWidgets('', (WidgetTester tester) async {
     var iconDataClass = SwidClass.fromJson(
-        json.decode(File("../test/swid/res/IconData.json").readAsStringSync()));
+        json.decode(File("test/swid/res/IconData.json").readAsStringSync()));
 
     expect(iconDataClass.instanceFieldDeclarations.length, 4);
     expect(
         TsClassConstructorImplementation(swidClass: iconDataClass).toTsSource(),
         """
-public constructor(codePoint: number, props : { fontFamily : string, fontPackage : string, matchTextDirection? : boolean, }){
+public constructor(codePoint: number, props : {  fontFamily? : string | undefined, fontPackage? : string | undefined, matchTextDirection? : boolean,}){
 flutter.widgets.iconData(this, codePoint, {
 ...iconDataDefaultProps,
 ...props

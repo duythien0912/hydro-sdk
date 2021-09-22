@@ -9,8 +9,8 @@ import 'package:hydro_sdk/swid/ir/swidClass.dart';
 void main() {
   LiveTestWidgetsFlutterBinding();
   testWidgets('', (WidgetTester tester) async {
-    var diagnosticsNodeClass = SwidClass.fromJson(json.decode(
-        File("../test/swid/res/DiagnosticsNode.json").readAsStringSync()));
+    var diagnosticsNodeClass = SwidClass.fromJson(json
+        .decode(File("test/swid/res/DiagnosticsNode.json").readAsStringSync()));
 
     expect(
         TsClassStaticMethodImplementation(
@@ -18,7 +18,7 @@ void main() {
             swidFunctionType: diagnosticsNodeClass.factoryConstructors
                 .firstWhere((x) => x.name == "message")).toTsSource(),
         """
-public static message(message: string, props : { allowWrap? : boolean, level? : DiagnosticLevel, style? : DiagnosticsTreeStyle, }) : IDiagnosticsNode{
+public static message(message: string, props : {  allowWrap? : boolean, level? : DiagnosticLevel, style? : DiagnosticsTreeStyle,}) : IDiagnosticsNode{
 return flutter.foundation.diagnosticsNodeMessage(message, {
 ...messageDefaultProps,
 ...props
