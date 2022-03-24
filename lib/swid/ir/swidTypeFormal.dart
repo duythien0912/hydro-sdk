@@ -1,84 +1,41 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:meta/meta.dart';
 
-import 'package:hydro_sdk/swid/ir/swidClass.dart';
-import 'package:hydro_sdk/swid/ir/swidFunctionType.dart';
-import 'package:hydro_sdk/swid/ir/swidInterface.dart';
 import 'package:hydro_sdk/swid/ir/swidReferenceDeclarationKind.dart';
-import 'package:hydro_sdk/swid/ir/swidType.dart';
+import 'package:hydro_sdk/swid/ir/swidTypeFormalBound.dart';
+import 'package:hydro_sdk/swid/ir/swidTypeFormalValue.dart';
+import 'package:hydro_sdk/swid/util/hashComparableMixin.dart';
+import 'package:hydro_sdk/swid/util/hashKeyMixin.dart';
+import 'package:hydro_sdk/swid/util/iCopyable.dart';
+import 'package:hydro_sdk/swid/util/iJsonTransformable.dart';
 
 part 'swidTypeFormal.freezed.dart';
 part 'swidTypeFormal.g.dart';
 
 @freezed
-abstract class SwidTypeFormalValue with _$SwidTypeFormalValue {
-  const factory SwidTypeFormalValue.fromString({@required String string}) =
-      _$FromString;
+class SwidTypeFormal
+    with
+        _$SwidTypeFormal,
+        HashKeyMixin<SwidTypeFormal>,
+        HashComparableMixin<SwidTypeFormal>
+    implements
+        ICopyable<SwidTypeFormal, $SwidTypeFormalCopyWith<SwidTypeFormal>>,
+        IJsonTransformable {
+  SwidTypeFormal._();
 
-  const factory SwidTypeFormalValue.fromSwidClass(
-      {@required SwidClass swidClass}) = _$FromSwidClass;
-
-  const factory SwidTypeFormalValue.fromSwidInterface(
-      {@required SwidInterface swidInterface}) = _$FromSwidInterface;
-
-  const factory SwidTypeFormalValue.fromSwidFunctionType(
-      {@required SwidFunctionType swidFunctionType}) = _$FromSwidFunctionType;
-
-  factory SwidTypeFormalValue.clone({
-    @required SwidTypeFormalValue swidTypeFormalValue,
-  }) =>
-      swidTypeFormalValue.when(
-        fromString: (val) => SwidTypeFormalValue.fromString(string: val),
-        fromSwidClass: (val) => SwidTypeFormalValue.fromSwidClass(
-          swidClass: SwidClass.clone(swidClass: val),
-        ),
-        fromSwidInterface: (val) => SwidTypeFormalValue.fromSwidInterface(
-          swidInterface: SwidInterface.clone(swidType: val),
-        ),
-        fromSwidFunctionType: (val) => SwidTypeFormalValue.fromSwidFunctionType(
-          swidFunctionType: SwidFunctionType.clone(
-            swidFunctionType: val,
-          ),
-        ),
-      );
-
-  factory SwidTypeFormalValue.fromJson(Map<String, dynamic> json) =>
-      _$SwidTypeFormalValueFromJson(json);
-}
-
-extension SwidTypeFormalValueMethods on SwidTypeFormalValue {
-  String get name => when(
-        fromString: (val) => val,
-        fromSwidClass: (val) => val.name,
-        fromSwidInterface: (val) => val.name,
-        fromSwidFunctionType: (val) => val.name,
-      );
-
-  String get displayName => when(
-        fromString: (val) => val,
-        fromSwidClass: (val) =>
-            SwidType.fromSwidClass(swidClass: val).displayName,
-        fromSwidInterface: (val) =>
-            SwidType.fromSwidInterface(swidInterface: val).displayName,
-        fromSwidFunctionType: (val) =>
-            SwidType.fromSwidFunctionType(swidFunctionType: val).displayName,
-      );
-}
-
-@freezed
-abstract class SwidTypeFormal with _$SwidTypeFormal {
-  const factory SwidTypeFormal({
-    @required SwidTypeFormalValue value,
-    @required SwidReferenceDeclarationKind swidReferenceDeclarationKind,
+  factory SwidTypeFormal({
+    required final SwidTypeFormalValue value,
+    required final SwidReferenceDeclarationKind swidReferenceDeclarationKind,
+    required final SwidTypeFormalBound? swidTypeFormalBound,
   }) = _$Data;
 
   factory SwidTypeFormal.fromJson(Map<String, dynamic> json) =>
       _$SwidTypeFormalFromJson(json);
 
   factory SwidTypeFormal.clone({
-    @required SwidTypeFormal swidTypeFormal,
-    SwidTypeFormalValue value,
-    SwidReferenceDeclarationKind swidReferenceDeclarationKind,
+    required final SwidTypeFormal swidTypeFormal,
+    final SwidTypeFormalValue? value,
+    final SwidReferenceDeclarationKind? swidReferenceDeclarationKind,
+    final SwidTypeFormalBound? swidTypeFormalBound,
   }) =>
       SwidTypeFormal(
         value: value ??
@@ -86,5 +43,38 @@ abstract class SwidTypeFormal with _$SwidTypeFormal {
                 swidTypeFormalValue: swidTypeFormal.value),
         swidReferenceDeclarationKind: swidReferenceDeclarationKind ??
             swidTypeFormal.swidReferenceDeclarationKind,
+        swidTypeFormalBound:
+            swidTypeFormalBound ?? swidTypeFormal.swidTypeFormalBound,
+      );
+
+  @override
+  SwidTypeFormal fromJson(final Map<String, dynamic> json) =>
+      SwidTypeFormal.fromJson(json);
+
+  @override
+  late final Iterable<Iterable<int>> hashableParts = (() sync* {
+    yield* value.hashKey.hashableParts;
+    yield [
+      swidReferenceDeclarationKind.index,
+    ];
+    yield* swidTypeFormalBound?.hashKey.hashableParts ??
+        [
+          [
+            1,
+          ],
+        ];
+  })();
+
+  @override
+  SwidTypeFormal clone({
+    final SwidTypeFormalValue? value,
+    final SwidReferenceDeclarationKind? swidReferenceDeclarationKind,
+    final SwidTypeFormalBound? swidTypeFormalBound,
+  }) =>
+      SwidTypeFormal.clone(
+        swidTypeFormal: this,
+        value: value,
+        swidReferenceDeclarationKind: swidReferenceDeclarationKind,
+        swidTypeFormalBound: swidTypeFormalBound,
       );
 }

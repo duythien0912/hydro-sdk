@@ -1,0 +1,37 @@
+{
+    "inputPackagePath": "/Users/chgibb/Documents/flutter",
+    "interfaces": [],
+    "emitOptions": {
+        "prefixPaths": [
+            "runtime"
+        ],
+        "allowList": {
+            "packagePaths": [
+                "package:flutter/src/widgets/framework.dart"
+            ],
+            "classNames": [
+                "Key"
+            ]
+        },
+        "denyList": {
+            "packagePaths": [],
+            "classNames": [
+                "TypeMatcher"
+            ]
+        },
+        "tsEmitOptions": {
+            "prefixPaths": [
+                "runtime"
+            ]
+        },
+        "dartEmitOptions": {
+            "hostPackageName": "hydro_sdk",
+            "prefixPaths": [
+                "lib",
+                "cfr",
+                "builtins",
+                "libs"
+            ]
+        }
+    }
+}

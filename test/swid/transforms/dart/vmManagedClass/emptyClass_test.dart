@@ -8,56 +8,65 @@ import 'package:hydro_sdk/swid/ir/swidInterface.dart';
 import 'package:hydro_sdk/swid/ir/swidNullabilitySuffix.dart';
 import 'package:hydro_sdk/swid/ir/swidReferenceDeclarationKind.dart';
 import 'package:hydro_sdk/swid/ir/swidType.dart';
+import 'package:hydro_sdk/swid/swars/cachingPipeline.dart';
+import 'package:hydro_sdk/swid/swars/pipelineNoopCacheMgr.dart';
 
 void main() {
   LiveTestWidgetsFlutterBinding();
   testWidgets('', (WidgetTester tester) async {
     var ir = DartVMManagedClassDeclaration(
-        swidClass: SwidClass(
-      name: "fooClass",
-      typeFormals: [],
-      isMixin: false,
-      extendedClass: null,
-      implementedClasses: [],
-      originalPackagePath: "",
-      nullabilitySuffix: SwidNullabilitySuffix.none,
-      staticMethods: [],
-      factoryConstructors: [],
-      instanceFieldDeclarations: {},
-      swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
-      constructorType: SwidFunctionType(
-        name: "",
+      swidClass: SwidClass(
+        name: "fooClass",
         typeFormals: [],
-        isFactory: false,
-        namedDefaults: {},
-        namedParameterTypes: {},
-        optionalParameterNames: [],
-        normalParameterNames: [],
-        normalParameterTypes: [],
-        nullabilitySuffix: SwidNullabilitySuffix.none,
-        optionalParameterTypes: [],
+        isMixin: false,
+        extendedClass: null,
+        implementedClasses: [],
         originalPackagePath: "",
-        returnType: SwidType.fromSwidInterface(
-            swidInterface: SwidInterface(
+        nullabilitySuffix: SwidNullabilitySuffix.none,
+        staticMethods: [],
+        factoryConstructors: [],
+        instanceFieldDeclarations: {},
+        declarationModifiers: SwidDeclarationModifiers.empty(),
+        generativeConstructors: [],
+        constructorType: SwidFunctionType(
           name: "",
+          typeFormals: [],
+          isFactory: false,
+          namedDefaults: {},
+          namedParameterTypes: {},
+          optionalParameterNames: [],
+          normalParameterNames: [],
+          normalParameterTypes: [],
           nullabilitySuffix: SwidNullabilitySuffix.none,
+          optionalParameterTypes: [],
           originalPackagePath: "",
-          referenceDeclarationKind: SwidReferenceDeclarationKind.voidType,
-          typeArguments: [],
-        )),
-        swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
+          returnType: SwidType.fromSwidInterface(
+              swidInterface: SwidInterface(
+            declarationModifiers: SwidDeclarationModifiers.empty(),
+            name: "",
+            nullabilitySuffix: SwidNullabilitySuffix.none,
+            originalPackagePath: "",
+            referenceDeclarationKind: SwidReferenceDeclarationKind.voidType,
+            typeArguments: [],
+          )),
+          declarationModifiers: SwidDeclarationModifiers.empty(),
+        ),
+        staticConstFieldDeclarations: [],
+        methods: [],
+        mixedInClasses: [],
       ),
-      staticConstFieldDeclarations: [],
-      methods: [],
-      mixedInClasses: [],
-    ));
+    );
 
-    expect(ir.toDartSource(), """
+    expect(
+        CachingPipeline(
+          cacheMgr: const PipelineNoopCacheMgr(),
+        ).reduceFromTerm(
+          ir,
+        ),
+        """
 class VMManagedfooClass extends VMManagedBox<fooClass> {
   VMManagedfooClass(
-      {@required this.table,
-      @required this.vmObject,
-      @required this.hydroState})
+      {required this.table, required this.vmObject, required this.hydroState})
       : super(
           table: table,
           vmObject: vmObject,

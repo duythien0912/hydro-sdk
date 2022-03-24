@@ -79,10 +79,8 @@ export async function buildTs({
     if (bundleInfo.diagnostics && bundleInfo.diagnostics.length) {
         bundleInfo.diagnostics.forEach((x) => {
             if (x.file) {
-                const {
-                    line,
-                    character,
-                } = x.file.getLineAndCharacterOfPosition(x.start!);
+                const { line, character } =
+                    x.file.getLineAndCharacterOfPosition(x.start!);
                 const message = ts.flattenDiagnosticMessageText(
                     x.messageText,
                     "\n"
@@ -120,9 +118,12 @@ export async function buildTs({
     const bundleResult = bundle(bundleInfo, logMgr);
 
     fs.writeFileSync(`${tempDir}/${config.modName}`, bundleResult.bundle);
-    const symbolsString = JSON.stringify(bundleResult.debugSymbols);
-    fs.writeFileSync(`${tempDir}/${config.modName}.symbols`, symbolsString);
-    fs.writeFileSync(outFileSymbols, symbolsString);
+
+    if (config.profile == "debug") {
+        const symbolsString = JSON.stringify(bundleResult.debugSymbols);
+        fs.writeFileSync(`${tempDir}/${config.modName}.symbols`, symbolsString);
+        fs.writeFileSync(outFileSymbols, symbolsString);
+    }
 
     compileByteCodeAndWriteHash(outFile, outFileHash, tempFile, config);
 

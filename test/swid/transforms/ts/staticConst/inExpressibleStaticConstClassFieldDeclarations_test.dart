@@ -12,6 +12,8 @@ import 'package:hydro_sdk/swid/ir/swidStaticConst.dart';
 import 'package:hydro_sdk/swid/ir/swidStaticConstFieldDeclaration.dart';
 import 'package:hydro_sdk/swid/ir/swidStaticConstFunctionInvocation.dart';
 import 'package:hydro_sdk/swid/ir/swidType.dart';
+import 'package:hydro_sdk/swid/swars/cachingPipeline.dart';
+import 'package:hydro_sdk/swid/swars/pipelineNoopCacheMgr.dart';
 
 void main() {
   LiveTestWidgetsFlutterBinding();
@@ -21,6 +23,7 @@ void main() {
       nullabilitySuffix: SwidNullabilitySuffix.none,
       originalPackagePath: "dart:typed_data",
       constructorType: null,
+      generativeConstructors: [],
       factoryConstructors: [],
       staticMethods: [],
       methods: [],
@@ -33,6 +36,7 @@ void main() {
               value: "Endian._",
               staticType: SwidType.fromSwidInterface(
                 swidInterface: SwidInterface(
+                  declarationModifiers: SwidDeclarationModifiers.empty(),
                   name: "Endian",
                   nullabilitySuffix: SwidNullabilitySuffix.none,
                   originalPackagePath: "dart:typed_data",
@@ -43,7 +47,9 @@ void main() {
               ),
               normalParameters: [
                 SwidStaticConst.fromSwidBooleanLiteral(
-                  swidBooleanLiteral: SwidBooleanLiteral(value: "false"),
+                  swidBooleanLiteral: SwidBooleanLiteral(
+                    value: "false",
+                  ),
                 ),
               ],
               namedParameters: {},
@@ -58,6 +64,7 @@ void main() {
               value: "Endian._",
               staticType: SwidType.fromSwidInterface(
                 swidInterface: SwidInterface(
+                  declarationModifiers: SwidDeclarationModifiers.empty(),
                   name: "Endian",
                   nullabilitySuffix: SwidNullabilitySuffix.none,
                   originalPackagePath: "dart:typed_data",
@@ -68,7 +75,9 @@ void main() {
               ),
               normalParameters: [
                 SwidStaticConst.fromSwidBooleanLiteral(
-                  swidBooleanLiteral: SwidBooleanLiteral(value: "true"),
+                  swidBooleanLiteral: SwidBooleanLiteral(
+                    value: "true",
+                  ),
                 ),
               ],
               namedParameters: {},
@@ -78,15 +87,27 @@ void main() {
         ),
       ],
       instanceFieldDeclarations: {},
-      swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
+      declarationModifiers: SwidDeclarationModifiers.empty(),
       mixedInClasses: [],
       extendedClass: null,
       isMixin: false,
       typeFormals: [],
     );
-    expect(requiresDartClassTranslationUnit(swidClass: endian), true);
     expect(
-        TsClassStaticConstFieldDeclarations(swidClass: endian).toTsSource(), """
+        requiresDartClassTranslationUnit(
+          pipeline: CachingPipeline(
+            cacheMgr: const PipelineNoopCacheMgr(),
+          ),
+          swidClass: endian,
+        ),
+        true);
+    expect(
+        CachingPipeline(
+          cacheMgr: const PipelineNoopCacheMgr(),
+        ).reduceFromTerm(
+          TsClassStaticConstFieldDeclarations(swidClass: endian),
+        ),
+        """
     public static big = dart.typed_data.endianBig();
     public static little = dart.typed_data.endianLittle();
 """);

@@ -1,18 +1,22 @@
 import 'package:analyzer/dart/element/element.dart' show ExecutableElement;
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:meta/meta.dart';
 
 import 'package:hydro_sdk/swid/ir/swidDeclarationModifiers.dart';
 
-SwidDeclarationModifiers swidDeclarationModifiersFromExecutableElement(
-        {@required ExecutableElement executableElement}) =>
+SwidDeclarationModifiers swidDeclarationModifiersFromExecutableElement({
+  required final ExecutableElement executableElement,
+}) =>
     SwidDeclarationModifiers(
+      ignoredAnalyses: [],
+      ignoredTransforms: [],
+      overridenTransforms: [],
       isAbstract: executableElement.isAbstract,
       isGetter: false,
       isOperator: executableElement.isOperator,
       isSetter: false,
       isStatic: executableElement.isStatic,
       isSynthetic: executableElement.isSynthetic,
+      isCovariant: false,
+      isExplicitlyCovariant: false,
       hasAlwaysThrows: executableElement.hasAlwaysThrows,
       hasDeprecated: executableElement.hasDeprecated,
       hasFactory: executableElement.hasFactory,
@@ -29,6 +33,6 @@ SwidDeclarationModifiers swidDeclarationModifiersFromExecutableElement(
       hasRequired: executableElement.hasRequired,
       hasSealed: executableElement.hasSealed,
       hasVisibleForTemplate: executableElement.hasVisibleForTemplate,
-      hasVisibleForTesting: executableElement.hasVisibleForTemplate,
+      hasVisibleForTesting: executableElement.hasVisibleForTesting,
       isPublic: executableElement.isPublic,
     );

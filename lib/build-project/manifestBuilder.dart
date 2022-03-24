@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cli_util/cli_logging.dart';
-import 'package:meta/meta.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:path/path.dart' as path;
+import 'package:pointycastle/export.dart' as pc;
 
 import 'package:hydro_sdk/build-project/componentBuilder.dart';
 import 'package:hydro_sdk/build-project/packageManifest.dart';
@@ -15,19 +17,23 @@ import 'package:hydro_sdk/projectConfig/projectConfigComponentChunk.dart';
 class ManifestBuilder {
   final ProjectConfigComponent projectConfigComponent;
   final ComponentBuilder componentBuilder;
-  final String ts2hc;
-  final String cacheDir;
-  final String profile;
+  final String? ts2hc;
+  final String? cacheDir;
+  final String? profile;
+  final String signingKey;
 
   const ManifestBuilder({
-    @required this.projectConfigComponent,
-    @required this.componentBuilder,
-    @required this.ts2hc,
-    @required this.cacheDir,
-    @required this.profile,
+    required this.projectConfigComponent,
+    required this.componentBuilder,
+    required this.ts2hc,
+    required this.cacheDir,
+    required this.profile,
+    required this.signingKey,
   });
 
-  Future<bool> build() async {
+  Future<bool> build({
+    required bool signManifest,
+  }) async {
     Logger logger = Logger.standard();
 
     Progress progress = logger.progress("Assembling manifest");
@@ -60,6 +66,30 @@ class ManifestBuilder {
         }
       }));
 
+      String rawSignature;
+      String? signature;
+
+      if (signManifest) {
+        String concatShas = "";
+        manifestEntries.sort((a, b) => a.sha256.compareTo(b.sha256));
+        manifestEntries.forEach((element) {
+          concatShas += element.sha256;
+        });
+
+        rawSignature = sha256Data(concatShas.codeUnits);
+
+        final pc.RSAPrivateKey privateKey =
+            RSAKeyParser().parse(signingKey) as pc.RSAPrivateKey;
+        final signer =
+            pc.RSASigner(pc.SHA256Digest(), '0609608648016503040201');
+
+        signer.init(true, pc.PrivateKeyParameter<pc.RSAPrivateKey>(privateKey));
+
+        final sig = signer
+            .generateSignature(Uint8List.fromList(rawSignature.codeUnits));
+        signature = base64Encode(sig.bytes);
+      }
+
       await File(
         [
           componentBuilder.unpackedOutputPath(),
@@ -77,6 +107,7 @@ class ManifestBuilder {
               .entryPoint),
         ].join(""),
         entries: manifestEntries,
+        signature: signature ?? "",
       ).toJson()));
     } catch (err) {
       print(err);

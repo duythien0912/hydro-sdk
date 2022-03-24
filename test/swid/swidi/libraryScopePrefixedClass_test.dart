@@ -1,13 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiClass.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiConst.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiDeclaration.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiEmptyConst.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiFunctionDeclaration.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiFunctionDeclarationOptionalParameter.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiInterface.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiLibraryScopePrefix.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiNullabilitySuffix.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiOptionalParameter.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiReferenceDeclarationPrefix.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiType.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/parser/swidiParser.dart';
 import 'lib/parserTestHarness.dart';
 
@@ -15,65 +18,107 @@ void main() {
   LiveTestWidgetsFlutterBinding();
   testWidgets('', (WidgetTester tester) async {
     parserTestHarness(
-        input: const ParserTestHarnessInput.fromList(inputs: [
-          """
+      input: const ParserTestHarnessInput.fromList(inputs: [
+        """
   class "package:flutter/src/widgets/icon_data.dart"::IconData {
     void foo([int bar,int baz,int qux,]);
   }
     """,
-        ]),
-        parser: const SwidiParser().build(),
-        result: [
-          const SwidiClass(
-              name: "IconData",
-              libraryScopePrefix: SwidiLibraryScopePrefix(
-                  name: "package:flutter/src/widgets/icon_data.dart"),
-              methods: [
-                SwidiFunctionDeclaration(
-                  name: "foo",
-                  returnType: SwidiInterface(
-                    name: "void",
-                    libraryScopePrefix: SwidiLibraryScopePrefix.empty,
-                    referenceDeclarationPrefix:
-                        SwidiReferenceDeclarationPrefix.empty,
-                    nullabilitySuffix: SwidiNullabilitySuffix.none,
+      ]),
+      parser: const SwidiParser().build(),
+      result: [
+        SwidiClass(
+          name: "IconData",
+          libraryScopePrefix: SwidiLibraryScopePrefix(
+            name: "package:flutter/src/widgets/icon_data.dart",
+          ),
+          staticMethods: [],
+          methods: [
+            SwidiFunctionDeclaration(
+              shortHandOverride: SwidiConst.fromSwidiEmptyConst(
+                swidiEmptyConst: SwidiEmptyConst(),
+              ),
+              typeFormals: [],
+              name: "foo",
+              returnType: SwidiType.fromSwidiInterface(
+                swidiInterface: SwidiInterface(
+                  annotations: [],
+                  typeArguments: [],
+                  name: "void",
+                  libraryScopePrefix: SwidiLibraryScopePrefix.empty,
+                  referenceDeclarationPrefix:
+                      SwidiReferenceDeclarationPrefix.empty,
+                  nullabilitySuffix: SwidiNullabilitySuffix.none,
+                ),
+              ),
+              optionalParameters: [
+                SwidiFunctionDeclarationOptionalParameter(
+                  declaration: SwidiDeclaration(
+                    defaultConstValue: SwidiConst.fromSwidiEmptyConst(
+                      swidiEmptyConst: SwidiEmptyConst(),
+                    ),
+                    name: "bar",
+                    type: SwidiType.fromSwidiInterface(
+                      swidiInterface: SwidiInterface(
+                        annotations: [],
+                        typeArguments: [],
+                        name: "int",
+                        libraryScopePrefix: SwidiLibraryScopePrefix.empty,
+                        referenceDeclarationPrefix:
+                            SwidiReferenceDeclarationPrefix.empty,
+                        nullabilitySuffix: SwidiNullabilitySuffix.none,
+                      ),
+                    ),
                   ),
-                  optionalParameters: [
-                    SwidiOptionalParameter(
-                        declaration: SwidiDeclaration(
-                            name: "bar",
-                            type: SwidiInterface(
-                              name: "int",
-                              libraryScopePrefix: SwidiLibraryScopePrefix.empty,
-                              referenceDeclarationPrefix:
-                                  SwidiReferenceDeclarationPrefix.empty,
-                              nullabilitySuffix: SwidiNullabilitySuffix.none,
-                            ))),
-                    SwidiOptionalParameter(
-                        declaration: SwidiDeclaration(
-                            name: "baz",
-                            type: SwidiInterface(
-                              name: "int",
-                              libraryScopePrefix: SwidiLibraryScopePrefix.empty,
-                              referenceDeclarationPrefix:
-                                  SwidiReferenceDeclarationPrefix.empty,
-                              nullabilitySuffix: SwidiNullabilitySuffix.none,
-                            ))),
-                    SwidiOptionalParameter(
-                        declaration: SwidiDeclaration(
-                            name: "qux",
-                            type: SwidiInterface(
-                              name: "int",
-                              libraryScopePrefix: SwidiLibraryScopePrefix.empty,
-                              referenceDeclarationPrefix:
-                                  SwidiReferenceDeclarationPrefix.empty,
-                              nullabilitySuffix: SwidiNullabilitySuffix.none,
-                            )))
-                  ],
-                  positionalParameters: [],
-                  namedParameters: [],
+                ),
+                SwidiFunctionDeclarationOptionalParameter(
+                  declaration: SwidiDeclaration(
+                    defaultConstValue: SwidiConst.fromSwidiEmptyConst(
+                      swidiEmptyConst: SwidiEmptyConst(),
+                    ),
+                    name: "baz",
+                    type: SwidiType.fromSwidiInterface(
+                      swidiInterface: SwidiInterface(
+                        annotations: [],
+                        typeArguments: [],
+                        name: "int",
+                        libraryScopePrefix: SwidiLibraryScopePrefix.empty,
+                        referenceDeclarationPrefix:
+                            SwidiReferenceDeclarationPrefix.empty,
+                        nullabilitySuffix: SwidiNullabilitySuffix.none,
+                      ),
+                    ),
+                  ),
+                ),
+                SwidiFunctionDeclarationOptionalParameter(
+                  declaration: SwidiDeclaration(
+                    defaultConstValue: SwidiConst.fromSwidiEmptyConst(
+                      swidiEmptyConst: SwidiEmptyConst(),
+                    ),
+                    name: "qux",
+                    type: SwidiType.fromSwidiInterface(
+                      swidiInterface: SwidiInterface(
+                        annotations: [],
+                        typeArguments: [],
+                        name: "int",
+                        libraryScopePrefix: SwidiLibraryScopePrefix.empty,
+                        referenceDeclarationPrefix:
+                            SwidiReferenceDeclarationPrefix.empty,
+                        nullabilitySuffix: SwidiNullabilitySuffix.none,
+                      ),
+                    ),
+                  ),
                 )
-              ])
-        ]);
+              ],
+              positionalParameters: [],
+              namedParameters: [],
+            )
+          ],
+          shortHandOverride: SwidiConst.fromSwidiEmptyConst(
+            swidiEmptyConst: SwidiEmptyConst(),
+          ),
+        )
+      ],
+    );
   }, tags: "swid");
 }

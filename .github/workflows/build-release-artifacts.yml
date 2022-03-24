@@ -11,8 +11,7 @@ jobs:
     env:
       ARCH: x64
       PLATFORM: linux
-    steps:
-      - uses: ilammy/setup-nasm@v1
+    steps:      
       - name: Extract Ref Names
         run: |
           echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
@@ -28,7 +27,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: "flutter/flutter"
-          ref: "1.22.0"
+          ref: "2.0.6"
           path: "flutter"
           fetch-depth: 0
       - name: Add Flutter to the PATH for Unix
@@ -83,6 +82,12 @@ jobs:
         shell: bash
         run: bash scripts/buildSdkTools.bash
         working-directory: hydro
+
+      - name: Calculate Sdk Tools Checksums
+        shell: bash
+        run: node scripts/calculateSdkToolChecksums
+        working-directory: hydro
+
       - name: Push Artifacts
         uses: ncipollo/release-action@v1
         with:
@@ -97,7 +102,7 @@ jobs:
       ARCH: x64
       PLATFORM: darwin
     steps:
-      - uses: ilammy/setup-nasm@v1
+      
       - name: Extract Ref Names
         run: |
           echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
@@ -108,7 +113,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: "flutter/flutter"
-          ref: "1.22.0"
+          ref: "2.0.6"
           path: "flutter"
           fetch-depth: 0
       - name: Add Flutter to the PATH for Unix
@@ -163,6 +168,12 @@ jobs:
         shell: bash
         run: bash scripts/buildSdkTools.bash
         working-directory: hydro
+
+      - name: Calculate Sdk Tools Checksums
+        shell: bash
+        run: node scripts/calculateSdkToolChecksums
+        working-directory: hydro
+
       - name: Push Artifacts
         uses: ncipollo/release-action@v1
         with:
@@ -177,7 +188,7 @@ jobs:
       ARCH: x64
       PLATFORM: win32
     steps:
-      - uses: ilammy/setup-nasm@v1
+      
       - name: Extract Ref Names
         run: |
           echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
@@ -188,7 +199,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: "flutter/flutter"
-          ref: "1.22.0"
+          ref: "2.0.6"
           path: "flutter"
           fetch-depth: 0
       - name: Add Flutter to the PATH for Unix
@@ -243,6 +254,12 @@ jobs:
         shell: bash
         run: bash scripts/buildSdkTools.bash
         working-directory: hydro
+
+      - name: Calculate Sdk Tools Checksums
+        shell: bash
+        run: node scripts/calculateSdkToolChecksums
+        working-directory: hydro
+
       - name: Push Artifacts
         uses: ncipollo/release-action@v1
         with:
@@ -271,7 +288,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: "flutter/flutter"
-          ref: "1.22.0"
+          ref: "2.0.6"
           path: "flutter"
           fetch-depth: 0
       - name: Add Flutter to the PATH for Unix
@@ -307,4 +324,5 @@ jobs:
           flutter pub run waveform:triggerDependent --repo="animated-list-app" --ref="main" --token="${{secrets.DISPATCH_TOKEN}}" --version="${{steps.refs.outputs.SOURCE_TAG}}"
           flutter pub run waveform:triggerDependent --repo="basic-appbar-app" --ref="main" --token="${{secrets.DISPATCH_TOKEN}}" --version="${{steps.refs.outputs.SOURCE_TAG}}"
           flutter pub run waveform:triggerDependent --repo="hotel-booking-app" --ref="main" --token="${{secrets.DISPATCH_TOKEN}}" --version="${{steps.refs.outputs.SOURCE_TAG}}"
+          flutter pub run waveform:triggerDependent --repo="codepush-tests" --ref="main" --token="${{secrets.DISPATCH_TOKEN}}" --version="${{steps.refs.outputs.SOURCE_TAG}}"
         working-directory: hydro

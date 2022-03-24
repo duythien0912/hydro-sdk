@@ -1,14 +1,22 @@
-import 'package:meta/meta.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 
+import 'package:hydro_sdk/swid/ir/analyses/isInexpressibleStaticConst.dart';
 import 'package:hydro_sdk/swid/ir/swidClass.dart';
-import 'package:hydro_sdk/swid/ir/util/isInexpressibleStaticConst.dart';
+import 'package:hydro_sdk/swid/swars/iSwarsPipeline.dart';
 
-bool requiresDartBinding({@required SwidClass swidClass}) =>
-    swidClass.instanceFieldDeclarations.entries.isNotEmpty ||
-    swidClass.methods.isNotEmpty ||
-    swidClass.staticConstFieldDeclarations.firstWhere(
-          (x) => isInexpressibleStaticConst(
-              parentClass: swidClass, staticConst: x.value),
-          orElse: () => null,
+bool requiresDartBinding({
+  required final SwidClass swidClass,
+  required final ISwarsPipeline pipeline,
+}) =>
+    (swidClass.name[0] != "_" && swidClass.isConstructible()) ||
+    swidClass.factoryConstructors.isNotEmpty ||
+    swidClass.staticMethods.isNotEmpty ||
+    swidClass.staticConstFieldDeclarations.firstWhereOrNull(
+          (x) => pipeline.reduceFromTerm(
+            IsInexpressibleStaticConst(
+              parentClass: swidClass,
+              swidStaticConst: x.value,
+            ),
+          ),
         ) !=
         null;

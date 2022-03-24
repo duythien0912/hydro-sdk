@@ -1,21 +1,32 @@
-import 'package:meta/meta.dart';
-
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiInterface.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiNullabilitySuffix.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/swidiNullabilitySuffixToSwidNullabilitySuffix.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/swidiTypeDeclarationModifiersToSwidDeclarationModifiers.dart';
 import 'package:hydro_sdk/swid/ir/swidInterface.dart';
-import 'package:hydro_sdk/swid/ir/swidNullabilitySuffix.dart';
 import 'package:hydro_sdk/swid/ir/swidReferenceDeclarationKind.dart';
+import 'package:hydro_sdk/swid/ir/swidType.dart';
+import 'package:hydro_sdk/swid/ir/swidTypeArgumentType.dart';
 
-SwidInterface swidiInterfaceToSwidInterface(
-        {@required SwidiInterface swidiInterface}) =>
+SwidInterface swidiInterfaceToSwidInterface({
+  required final SwidiInterface swidiInterface,
+}) =>
     SwidInterface(
       name: swidiInterface.name,
-      nullabilitySuffix:
-          swidiInterface.nullabilitySuffix == SwidiNullabilitySuffix.question
-              ? SwidNullabilitySuffix.question
-              : SwidNullabilitySuffix.none,
+      nullabilitySuffix: swidiNullabilitySuffixToSwidNullabilitySuffix(
+        swidiNullabilitySuffix: swidiInterface.nullabilitySuffix,
+      ),
       originalPackagePath: swidiInterface.libraryScopePrefix.name,
-      typeArguments: [],
+      typeArguments: swidiInterface.typeArguments
+          .map(
+            (x) => SwidTypeArgumentType(
+              type: SwidType.fromSwidInterface(
+                swidInterface: swidiInterfaceToSwidInterface(
+                  swidiInterface: x,
+                ),
+              ),
+              element: null,
+            ),
+          )
+          .toList(),
       referenceDeclarationKind:
           swidiInterface.referenceDeclarationPrefix.name == "class"
               ? SwidReferenceDeclarationKind.classElement
@@ -28,5 +39,9 @@ SwidInterface swidiInterfaceToSwidInterface(
                           : swidiInterface.referenceDeclarationPrefix.name ==
                                   "dynamic"
                               ? SwidReferenceDeclarationKind.dynamicType
-                              : null,
+                              : SwidReferenceDeclarationKind.unknown,
+      declarationModifiers:
+          swidiTypeDeclarationModifiersToSwidDeclarationModifiers(
+        swidiType: swidiInterface,
+      ),
     );

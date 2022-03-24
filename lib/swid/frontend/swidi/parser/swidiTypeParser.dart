@@ -1,41 +1,36 @@
 import 'package:petitparser/petitparser.dart';
 
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiFunctionType.dart';
 import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiInterface.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiLibraryScopePrefix.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiNullabilitySuffix.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiReferenceDeclarationPrefix.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/grammar/swidiGrammarDefinition.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/parser/swidiLibraryScopePrefixParser.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/parser/swidiReferenceDeclarationPrefixParser.dart';
-import 'package:hydro_sdk/swid/frontend/swidi/parser/util/collectTokens.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/ast/swidiType.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/grammar/lexers/iFunctionTypeLexer.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/grammar/lexers/iInterfaceTypeLexer.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/grammar/lexers/iTypeLexer.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/grammar/swidiDeclarationGrammarDefinition.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/grammar/swidiFunctionTypeGrammarDefinition.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/parser/parsers/iFunctionTypeParser.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/parser/parsers/iInterfaceTypeParser.dart';
+import 'package:hydro_sdk/swid/frontend/swidi/parser/parsers/iTypeParser.dart';
 
 mixin SwidiTypeParser
-    on
-        SwidiGrammarDefinition,
-        SwidiLibraryScopePrefixParser,
-        SwidiReferenceDeclarationPrefixParser {
-  Parser<SwidiInterface> type() => super.type().map((x) {
-        var tokenList = collectTokens<Token>(x);
-        String token;
-        String nullabilitySuffix;
-        if (tokenList?.isNotEmpty ?? false) {
-          token = tokenList.last?.input ?? "";
-          nullabilitySuffix = tokenList.first?.input ?? "";
-        }
-        return SwidiInterface(
-          name: token != nullabilitySuffix ? token + nullabilitySuffix : token,
-          nullabilitySuffix: nullabilitySuffix == "?"
-              ? SwidiNullabilitySuffix.question
-              : SwidiNullabilitySuffix.none,
-          libraryScopePrefix:
-              collectTokens<SwidiLibraryScopePrefix>(x)?.isNotEmpty ?? false
-                  ? collectTokens<SwidiLibraryScopePrefix>(x).first
-                  : SwidiLibraryScopePrefix.empty,
-          referenceDeclarationPrefix:
-              collectTokens<SwidiReferenceDeclarationPrefix>(x)?.isNotEmpty ??
-                      false
-                  ? collectTokens<SwidiReferenceDeclarationPrefix>(x).first
-                  : SwidiReferenceDeclarationPrefix.empty,
-        );
-      });
+    on SwidiDeclarationGrammarDefinition, SwidiFunctionTypeGrammarDefinition
+    implements
+        ITypeLexer,
+        IInterfaceTypeLexer,
+        IFunctionTypeLexer,
+        ITypeParser<Parser<SwidiType?>>,
+        IInterfaceTypeParser<Parser<SwidiInterface>>,
+        IFunctionTypeParser<Parser<SwidiFunctionType>> {
+  @override
+  Parser<SwidiType?> type() => super.type().map(
+        (x) => x is SwidiInterface
+            ? SwidiType.fromSwidiInterface(
+                swidiInterface: x,
+              )
+            : x is SwidiFunctionType
+                ? SwidiType.fromSwidiFunctionType(
+                    swidiFunctionType: x,
+                  )
+                : null,
+      );
 }

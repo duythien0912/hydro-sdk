@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hydro_sdk/swid/backend/dart/dartStaticMethodNamespaceSymbolDeclaration.dart';
+import 'package:hydro_sdk/swid/ir/constPrimitives.dart';
 import 'package:hydro_sdk/swid/ir/swidClass.dart';
 import 'package:hydro_sdk/swid/ir/swidDeclarationModifiers.dart';
 import 'package:hydro_sdk/swid/ir/swidFunctionType.dart';
@@ -8,8 +9,12 @@ import 'package:hydro_sdk/swid/ir/swidInterface.dart';
 import 'package:hydro_sdk/swid/ir/swidNullabilitySuffix.dart';
 import 'package:hydro_sdk/swid/ir/swidReferenceDeclarationKind.dart';
 import 'package:hydro_sdk/swid/ir/swidType.dart';
+import 'package:hydro_sdk/swid/ir/swidTypeArgumentType.dart';
 import 'package:hydro_sdk/swid/ir/swidTypeFormal.dart';
-import 'package:hydro_sdk/swid/ir/util/instantiateAllGenericsAsDynamic.dart';
+import 'package:hydro_sdk/swid/ir/swidTypeFormalValue.dart';
+import 'package:hydro_sdk/swid/ir/transforms/instantiateAllGenericsAsDynamic.dart';
+import 'package:hydro_sdk/swid/swars/cachingPipeline.dart';
+import 'package:hydro_sdk/swid/swars/pipelineNoopCacheMgr.dart';
 
 void main() {
   LiveTestWidgetsFlutterBinding();
@@ -19,13 +24,14 @@ void main() {
       nullabilitySuffix: SwidNullabilitySuffix.none,
       originalPackagePath: "dart:core",
       constructorType: null,
+      generativeConstructors: [],
       factoryConstructors: [],
       implementedClasses: [],
       instanceFieldDeclarations: {},
       methods: [],
       mixedInClasses: [],
       staticConstFieldDeclarations: [],
-      swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
+      declarationModifiers: SwidDeclarationModifiers.empty(),
       staticMethods: [],
       typeFormals: [],
       extendedClass: null,
@@ -36,28 +42,31 @@ void main() {
       name: "castFrom",
       nullabilitySuffix: SwidNullabilitySuffix.none,
       originalPackagePath: "dart:core",
-      swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
+      declarationModifiers: SwidDeclarationModifiers.empty(),
       namedParameterTypes: {
         "newSet": SwidType.fromSwidFunctionType(
           swidFunctionType: SwidFunctionType(
-              name: "",
-              nullabilitySuffix: SwidNullabilitySuffix.question,
-              originalPackagePath: "",
-              swidDeclarationModifiers: SwidDeclarationModifiers.empty(),
-              namedParameterTypes: {},
-              namedDefaults: {},
-              normalParameterNames: [],
-              normalParameterTypes: [],
-              optionalParameterNames: [],
-              optionalParameterTypes: [],
-              returnType: SwidType.fromSwidInterface(
-                swidInterface: SwidInterface(
-                  name: "Set<R>",
-                  nullabilitySuffix: SwidNullabilitySuffix.none,
-                  originalPackagePath: "dart:core",
-                  typeArguments: [
-                    SwidType.fromSwidInterface(
+            name: "",
+            nullabilitySuffix: SwidNullabilitySuffix.question,
+            originalPackagePath: "",
+            declarationModifiers: SwidDeclarationModifiers.empty(),
+            namedParameterTypes: {},
+            namedDefaults: {},
+            normalParameterNames: [],
+            normalParameterTypes: [],
+            optionalParameterNames: [],
+            optionalParameterTypes: [],
+            returnType: SwidType.fromSwidInterface(
+              swidInterface: SwidInterface(
+                declarationModifiers: SwidDeclarationModifiers.empty(),
+                name: "Set<R>",
+                nullabilitySuffix: SwidNullabilitySuffix.none,
+                originalPackagePath: "dart:core",
+                typeArguments: [
+                  SwidTypeArgumentType(
+                    type: SwidType.fromSwidInterface(
                       swidInterface: SwidInterface(
+                        declarationModifiers: SwidDeclarationModifiers.empty(),
                         name: "R",
                         nullabilitySuffix: SwidNullabilitySuffix.none,
                         originalPackagePath: "",
@@ -66,39 +75,52 @@ void main() {
                             SwidReferenceDeclarationKind.typeParameterType,
                       ),
                     ),
-                  ],
-                  referenceDeclarationKind:
-                      SwidReferenceDeclarationKind.classElement,
-                ),
+                    element: null,
+                  ),
+                ],
+                referenceDeclarationKind:
+                    SwidReferenceDeclarationKind.classElement,
               ),
-              isFactory: false,
-              typeFormals: [
-                SwidTypeFormal(
-                  value: SwidTypeFormalValue.fromString(string: "R"),
-                  swidReferenceDeclarationKind:
-                      SwidReferenceDeclarationKind.typeParameterType,
-                )
-              ]),
+            ),
+            isFactory: false,
+            typeFormals: [
+              SwidTypeFormal(
+                swidTypeFormalBound: null,
+                value: SwidTypeFormalValue.fromString(
+                  string: "R",
+                ),
+                swidReferenceDeclarationKind:
+                    SwidReferenceDeclarationKind.typeParameterType,
+              )
+            ],
+          ),
         )
       },
       namedDefaults: {},
-      normalParameterNames: ["source"],
+      normalParameterNames: [
+        "source",
+      ],
       normalParameterTypes: [
         SwidType.fromSwidInterface(
           swidInterface: SwidInterface(
+            declarationModifiers: SwidDeclarationModifiers.empty(),
             name: "Set<S>",
             nullabilitySuffix: SwidNullabilitySuffix.none,
             originalPackagePath: "dart:core",
             typeArguments: [
-              SwidType.fromSwidInterface(
-                swidInterface: SwidInterface(
-                  name: "S",
-                  nullabilitySuffix: SwidNullabilitySuffix.none,
-                  originalPackagePath: "dart:core",
-                  typeArguments: [],
-                  referenceDeclarationKind:
-                      SwidReferenceDeclarationKind.typeParameterType,
+              SwidTypeArgumentType(
+                type: SwidType.fromSwidInterface(
+                  swidInterface: SwidInterface(
+                    declarationModifiers: SwidDeclarationModifiers.empty(),
+                    name: "S",
+                    nullabilitySuffix: SwidNullabilitySuffix.none,
+                    originalPackagePath: "dart:core",
+                    typeArguments: [],
+                    referenceDeclarationKind:
+                        SwidReferenceDeclarationKind.typeParameterType,
+                  ),
                 ),
+                element: null,
               ),
             ],
             referenceDeclarationKind: SwidReferenceDeclarationKind.classElement,
@@ -109,19 +131,24 @@ void main() {
       optionalParameterTypes: [],
       returnType: SwidType.fromSwidInterface(
         swidInterface: SwidInterface(
+          declarationModifiers: SwidDeclarationModifiers.empty(),
           name: "Set<T>",
           nullabilitySuffix: SwidNullabilitySuffix.none,
           originalPackagePath: "dart:core",
           typeArguments: [
-            SwidType.fromSwidInterface(
-              swidInterface: SwidInterface(
-                name: "T",
-                nullabilitySuffix: SwidNullabilitySuffix.none,
-                originalPackagePath: "dart:core",
-                typeArguments: [],
-                referenceDeclarationKind:
-                    SwidReferenceDeclarationKind.typeParameterType,
+            SwidTypeArgumentType(
+              type: SwidType.fromSwidInterface(
+                swidInterface: SwidInterface(
+                  declarationModifiers: SwidDeclarationModifiers.empty(),
+                  name: "T",
+                  nullabilitySuffix: SwidNullabilitySuffix.none,
+                  originalPackagePath: "dart:core",
+                  typeArguments: [],
+                  referenceDeclarationKind:
+                      SwidReferenceDeclarationKind.typeParameterType,
+                ),
               ),
+              element: null,
             )
           ],
           referenceDeclarationKind: SwidReferenceDeclarationKind.classElement,
@@ -130,12 +157,18 @@ void main() {
       isFactory: false,
       typeFormals: [
         SwidTypeFormal(
-          value: SwidTypeFormalValue.fromString(string: "S"),
+          swidTypeFormalBound: null,
+          value: SwidTypeFormalValue.fromString(
+            string: "S",
+          ),
           swidReferenceDeclarationKind:
               SwidReferenceDeclarationKind.typeParameterType,
         ),
         SwidTypeFormal(
-          value: SwidTypeFormalValue.fromString(string: "T"),
+          swidTypeFormalBound: null,
+          value: SwidTypeFormalValue.fromString(
+            string: "T",
+          ),
           swidReferenceDeclarationKind:
               SwidReferenceDeclarationKind.typeParameterType,
         ),
@@ -143,25 +176,37 @@ void main() {
     );
 
     expect(
-        DartStaticMethodNamespaceSymbolDeclaration(
-          swidClass: set,
-          swidFunctionType: instantiateAllGenericsAsDynamic(
-                  swidType:
-                      SwidType.fromSwidFunctionType(swidFunctionType: castFrom))
-              .maybeWhen(
-                  fromSwidFunctionType: (val) => val, orElse: () => null),
-        ).toDartSource(),
+        CachingPipeline(
+          cacheMgr: const PipelineNoopCacheMgr(),
+        ).reduceFromTerm(
+          DartStaticMethodNamespaceSymbolDeclaration(
+            swidClass: set,
+            swidFunctionType: CachingPipeline(
+              cacheMgr: const PipelineNoopCacheMgr(),
+            )
+                .reduceFromTerm(
+                  InstantiateAllGenericsAsDynamic(
+                    swidType: SwidType.fromSwidFunctionType(
+                      swidFunctionType: castFrom,
+                    ),
+                  ),
+                )
+                .maybeWhen(
+                  fromSwidFunctionType: (val) => val,
+                  orElse: () => dartUnknownFunction,
+                ),
+          ),
+        ),
         """
 table  [
 \'setCastFrom\'
-] = makeLuaDartFunc(func: (List<dynamic> args) { 
-Closure newSet=args  [
+] = makeLuaDartFunc(func: (List<dynamic> luaCallerArguments) { 
+Closure? unpackednewSet=luaCallerArguments.length >= 3 ? luaCallerArguments  [
 2
 ]  [
 \'newSet\'
-];
-return  [maybeBoxObject<Set>(object: Set.castFrom(maybeUnBoxAndBuildArgument<Set<dynamic>>(args  [
+] : null;return [maybeBoxObject<Set>(object: Set.castFrom(maybeUnBoxAndBuildArgument<Set<dynamic>, dynamic>(luaCallerArguments  [
 1
-], parentState: hydroState), newSet: newSet != null ? <R>() => maybeUnBoxAndBuildArgument<Set<R>>(newSet.dispatch([args[0],],parentState:hydroState,)[0], parentState: hydroState) : null ), hydroState: hydroState, table: HydroTable())]; } );""");
+], parentState: hydroState), newSet: unpackednewSet != null ? <R>() => maybeUnBoxAndBuildArgument<Set<R>, R>(unpackednewSet.dispatch([luaCallerArguments[0],],parentState:hydroState,)[0], parentState: hydroState) : null ), hydroState: hydroState, table: HydroTable()),]; } );""");
   }, tags: "swid");
 }
